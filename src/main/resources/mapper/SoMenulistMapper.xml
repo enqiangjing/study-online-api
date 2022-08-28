@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoMenulistMapper">
+    <!-- 此处与接口方法名对应 指定参数类型与返回结果类型-->
+    <select id="getUserMenu" parameterType="com.so.studyonline.entity.SoMenulist"
+            resultType="com.so.studyonline.entity.SoMenulist">
+        select *
+        from so_menu_promise
+                 left join so_menulist sm on so_menu_promise.menu_key = sm.menu_key
+        where so_menu_promise.user_role = #{userRole}
+    </select>
+</mapper>

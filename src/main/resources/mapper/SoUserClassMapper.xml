@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoUserClassMapper">
+    <!--where标签：内部if都不满足则不处理，若满足，则将第一个语句的头部的and换成where关键字-->
+    <select id="findUsersClass" parameterType="com.so.studyonline.entity.SoUserClass"
+            resultType="com.so.studyonline.entity.SoUserClass">
+        SELECT t3.*,
+        t4.title AS class_name,
+        t4.`type` AS class_type,
+        t4.thumbnail,
+        t4.banner,
+        t4.lecturer,
+        t4.class_hour,
+        t4.is_public
+        FROM (
+        SELECT t1.id,
+        t1.curriculum_id,
+        t1.buy_user_id,
+        t1.class_id,
+        t2.code AS class_code,
+        t2.start_date,
+        t2.end_date,
+        t2.headmaster
+        FROM (
+        SELECT *
+        FROM so_user_buy_class
+        WHERE buy_user_id = #{buyUserId}) t1
+        LEFT JOIN so_class_info t2 ON t1.class_id = t2.id) t3
+        LEFT JOIN so_curriculum_info t4 ON t3.curriculum_id = t4.id
+        <where>
+            <if test="classId!=null and classId!=0">
+                and t4.id=#{classId}
+            </if>
+        </where>
+    </select>
+    <select id="findClassByClassId" parameterType="com.so.studyonline.entity.SoUserClass"
+            resultType="com.so.studyonline.entity.SoUserClass">
+        select *
+        from so_user_buy_class
+        where id = #{id}
+    </select>
+</mapper>

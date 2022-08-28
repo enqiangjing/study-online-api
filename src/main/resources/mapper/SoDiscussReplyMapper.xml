@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoDiscussReplyMapper">
+    <!-- 此处与接口方法名对应 指定参数类型与返回结果类型-->
+    <select id="findSoDiscussReply" parameterType="com.so.studyonline.entity.SoDiscussReply"
+            resultType="com.so.studyonline.entity.SoDiscussReply">
+        select * from so_discuss_reply
+        <where>
+            <if test="id!=null and id!=0">
+                and id=#{id}
+            </if>
+            <if test="content!=null and !''.equals(content)">
+                and content=#{content}
+            </if>
+            <if test="discussId!=null and discussId!=0">
+                and discuss_id=#{discussId}
+            </if>
+            <if test="topicId!=null and topicId!=0">
+                and topic_id=#{topicId}
+            </if>
+            <if test="userId!=null and userId!=0">
+                and user_id=#{userId}
+            </if>
+            <if test="replyTime!=null and !''.equals(replyTime)">
+                and reply_time=#{replyTime}
+            </if>
+            <if test="updateTime!=null and !''.equals(updateTime)">
+                and update_time=#{updateTime}
+            </if>
+            <if test="deletedTime!=null and !''.equals(deletedTime)">
+                and deleted_time=#{deletedTime}
+            </if>
+            <if test="status!=null and status!=0">
+                and status=#{status}
+            </if>
+            <if test="floor!=null and floor!=0">
+                and floor=#{floor}
+            </if>
+            <if test="replyId!=null and replyId!=0">
+                and reply_id=#{replyId}
+            </if>
+        </where>
+    </select>
+
+    <select id="findSoDiscussReplyAndUserName" parameterType="com.so.studyonline.entity.SoDiscussReply"
+            resultType="com.so.studyonline.entity.SoDiscussReply">
+        select so_discuss_reply.*, user_name, user_img
+        from so_discuss_reply
+                 left join so_user on so_discuss_reply.user_id = so_user.id
+        where so_discuss_reply.topic_id = #{topicId}
+    </select>
+
+    <select id="getFloorMax" parameterType="com.so.studyonline.entity.SoDiscussReply" resultType="java.lang.Integer">
+        select max(`floor`)
+        from so_discuss_reply
+        where topic_id = #{topicId}
+          and discuss_id = #{discussId}
+    </select>
+
+    <insert id="addDiscussReply" parameterType="com.so.studyonline.entity.SoDiscussReply" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into so_discuss_reply (content, topic_id, discuss_id, user_id, reply_time, `status`,
+                                      `floor`, reply_id) value (#{content}, #{topicId}, #{discussId}, #{userId},
+                                                                #{replyTime}, #{status}, #{floor}, #{replyId})
+    </insert>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoDiscussMapper">
+    <!-- 此处与接口方法名对应 指定参数类型与返回结果类型-->
+    <select id="findSoDiscuss" parameterType="com.so.studyonline.entity.SoDiscuss"
+            resultType="com.so.studyonline.entity.SoDiscuss">
+        select * from so_discuss
+        <where>
+            <if test="id!=null and id!=0">
+                and id=#{id}
+            </if>
+            <if test="topicId!=null and topicId!=0">
+                and topic_id=#{topicId}
+            </if>
+            <if test="topicType!=null and !''.equals(topicType)">
+                and topic_type=#{topicType}
+            </if>
+            <if test="content!=null and !''.equals(content)">
+                and content like concat('%',#{content},'%')
+            </if>
+            <if test="userId!=null and userId!=0">
+                and user_id=#{userId}
+            </if>
+            <if test="discussTime!=null and !''.equals(discussTime)">
+                and discuss_time=#{discussTime}
+            </if>
+            <if test="updateTime!=null and !''.equals(updateTime)">
+                and update_time=#{updateTime}
+            </if>
+            <if test="deletedTime!=null and !''.equals(deletedTime)">
+                and deleted_time=#{deletedTime}
+            </if>
+            <if test="status!=null and status!=0">
+                and status=#{status}
+            </if>
+            <if test="floor!=null and floor!=0">
+                and floor=#{floor}
+            </if>
+        </where>
+    </select>
+
+    <select id="findDoDiscussAddUserName" parameterType="com.so.studyonline.entity.SoDiscuss"
+            resultType="com.so.studyonline.entity.SoDiscuss">
+        select so_discuss.*, user_name, user_img
+        from so_discuss
+                 left join so_user on so_discuss.user_id = so_user.id
+        where so_discuss.topic_id = #{topicId}
+    </select>
+
+    <select id="findTest" parameterType="com.so.studyonline.entity.SoDiscuss"
+            resultType="com.so.studyonline.entity.SoDiscuss">
+        select *
+        from so_discuss
+    </select>
+
+    <insert id="addDiscuss" parameterType="com.so.studyonline.entity.SoDiscuss" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into so_discuss (topic_id, topic_type, content, user_id, discuss_time, `status`,
+                                `floor`) VALUE (#{topicId}, #{topicType}, #{content}, #{userId}, #{discussTime},
+                                                #{status}, #{floor})
+    </insert>
+
+    <select id="getFloorMax" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select max(`floor`)
+        from so_discuss
+        where topic_id = #{topicId}
+    </select>
+</mapper>

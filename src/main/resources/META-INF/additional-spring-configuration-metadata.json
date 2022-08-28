@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "user.file.path",
+      "type": "java.lang.String",
+      "description": "Description for user.file.path."
+    },
+    {
+      "name": "user.up_file_path",
+      "type": "java.lang.String",
+      "description": "Description for user.up_file_path."
+    },
+    {
+      "name": "qnu.config.qnu_access_key",
+      "type": "java.lang.String",
+      "description": "Description for qnu.config.qnu_access_key."
+    },
+    {
+      "name": "qnu.config.qnu_secret_key",
+      "type": "java.lang.String",
+      "description": "Description for qnu.config.qnu_secret_key."
+    },
+    {
+      "name": "qnu.config.qnu_name",
+      "type": "java.lang.String",
+      "description": "Description for qnu.config.qnu_name."
+    },
+    {
+      "name": "qnu.config.qnu_value",
+      "type": "java.lang.String",
+      "description": "Description for qnu.config.qnu_value."
+    }
+  ] }

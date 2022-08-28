@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoAllContentMapper">
+    <!--where标签：内部if都不满足则不处理，若满足，则将第一个语句的头部的and换成where关键字-->
+    <select id="findAllContent" parameterType="com.so.studyonline.entity.SoAllContent"
+            resultType="com.so.studyonline.entity.SoAllContent">
+        select * from so_all_content
+        <where>
+            <if test="id!=null and id!=0">
+                and id = #{id}
+            </if>
+            <if test="title!=null and !''.equals(title)">
+                and title like concat('%',#{title},'%')
+            </if>
+            <if test="content!=null and !''.equals(content)">
+                and content like concat('%',#{content},'%')
+            </if>
+            <if test="author!=null and !''.equals(author)">
+                and author like concat('%',#{author},'%')
+            </if>
+            <if test="readTimes!=null and readTimes!=0">
+                and readTimes = #{readTimes}
+            </if>
+            <if test="discussTimes!=null and discussTimes!=0">
+                and discussTimes = #{discussTimes}
+            </if>
+            <if test="type!=null and !''.equals(type)">
+                and so_all_content.type = #{type}
+            </if>
+            <if test="createdTime!=null and !''.equals(createdTime)">
+                and createdTime = #{createdTime}
+            </if>
+            <if test="updateTime!=null and !''.equals(updateTime)">
+                and updateTime = #{updateTime}
+            </if>
+            <if test="deletedTime!=null and !''.equals(deletedTime)">
+                and deletedTime = #{deletedTime}
+            </if>
+            <if test="status!=null and status!=0">
+                and so_all_content.status = #{status}
+            </if>
+            <if test="extraA!=null and !''.equals(extraA)">
+                and extra_a = #{extraA}
+            </if>
+            <if test="extraB!=null and !''.equals(extraB)">
+                and extra_b = #{extraB}
+            </if>
+            <if test="extraC!=null and !''.equals(extraC)">
+                and extra_c = #{extraC}
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" parameterType="java.lang.Long" resultType="com.so.studyonline.entity.SoAllContent">
+        select *
+        from so_all_content
+        where id = #{id}
+    </select>
+
+    <select id="findExperience" parameterType="com.so.studyonline.entity.SoAllContent"
+            resultType="com.so.studyonline.entity.SoAllContent">
+        select *
+        from so_all_content
+        where extra_a = #{extraA}
+          and so_all_content.type = 'article'
+        limit 4
+    </select>
+
+    <select id="findFireVideo" parameterType="com.so.studyonline.entity.SoAllContent"
+            resultType="com.so.studyonline.entity.SoAllContent">
+        select *
+        from so_all_content
+        where so_all_content.type = #{type}
+        order by read_times desc
+        limit 4
+    </select>
+
+    <select id="findAllContentLike" parameterType="com.so.studyonline.entity.SoAllContent"
+            resultType="com.so.studyonline.entity.SoAllContent">
+        select * from so_all_content
+        <where>
+            <if test="title!=null and !''.equals(title)">
+                or title like concat('%',#{title},'%')
+            </if>
+            <if test="author!=null and !''.equals(author)">
+                or author like concat('%',#{author},'%')
+            </if>
+            <if test="content!=null and !''.equals(content)">
+                or content like concat('%',#{content},'%')
+            </if>
+            <if test="type!=null and !''.equals(type)">
+                and so_all_content.type = #{type}
+            </if>
+        </where>
+        limit #{pageIndex},#{pageNum}
+    </select>
+
+    <select id="findAllContentLikeTotal" parameterType="com.so.studyonline.entity.SoAllContent"
+            resultType="java.lang.Integer">
+        select count(*) from so_all_content
+        <where>
+            <if test="title!=null and !''.equals(title)">
+                or title like concat('%',#{title},'%')
+            </if>
+            <if test="author!=null and !''.equals(author)">
+                or author like concat('%',#{author},'%')
+            </if>
+            <if test="content!=null and !''.equals(content)">
+                or content like concat('%',#{content},'%')
+            </if>
+            <if test="type!=null and !''.equals(type)">
+                and so_all_content.type = #{type}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateContentItem" parameterType="com.so.studyonline.entity.SoAllContent">
+        update so_all_content
+        <set>
+            <if test="title!=null and !''.equals(title)">
+                title = #{title},
+            </if>
+            <if test="content!=null and !''.equals(content)">
+                content = #{content},
+            </if>
+            <if test="status!=null">
+                `status` = #{status},
+            </if>
+            <if test="extraA!=null and !''.equals(extraA)">
+                extra_a = #{extraA},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <insert id="creationItem" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.so.studyonline.entity.SoAllContent">
+        insert into so_all_content(title, content, author, read_times, discuss_times, type, created_time,
+                                   update_time, deleted_time, status, extra_a, extra_b, extra_c)
+        values (#{title}, #{content}, #{author}, #{readTimes}, #{discussTimes}, #{type}, #{createdTime}, #{updateTime},
+                #{deletedTime}, #{status},
+                #{extraA}, #{extraB}, #{extraC})
+    </insert>
+
+
+    <select id="getFireOrder" parameterType="com.so.studyonline.entity.SoAllContent"
+            resultType="com.so.studyonline.entity.SoAllContent">
+        select *
+        from so_all_content
+        order by hot desc
+        limit 9
+    </select>
+</mapper>

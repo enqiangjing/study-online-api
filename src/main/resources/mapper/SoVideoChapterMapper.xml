@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoVideoChapterMapper">
+    <!--where标签：内部if都不满足则不处理，若满足，则将第一个语句的头部的and换成where关键字-->
+    <select id="findVideoChapter" parameterType="com.so.studyonline.entity.SoVideoChapter"
+            resultType="com.so.studyonline.entity.SoVideoChapter">
+        select * from so_video_chapter
+        <where>
+            <if test="id!=null and id!=0">
+                and so_video_chapter.id = #{id}
+            </if>
+            <if test="videoId!=null and videoId!=0">
+                and video_id = #{videoId}
+            </if>
+            <if test="part!=null and part!=0">
+                and part = #{part}
+            </if>
+            <if test="partName!=null and !''.equals(partName)">
+                and part_name = #{partName}
+            </if>
+            <if test="chapter!=null and chapter!=0">
+                and chapter = #{chapter}
+            </if>
+            <if test="chapterName!=null and !''.equals(chapterName)">
+                and chapter_name like concat('%',#{chapterName},'%')
+            </if>
+            <if test="linkUrl!=null and !''.equals(linkUrl)">
+                and link_url = #{linkUrl}
+            </if>
+        </where>
+    </select>
+
+    <select id="findVideoChapterByVideoId" parameterType="com.so.studyonline.entity.SoVideoChapter"
+            resultType="com.so.studyonline.entity.SoVideoChapter">
+        select *
+        from so_video_chapter
+        where video_id = #{videoId}
+        order by part asc, chapter asc
+    </select>
+</mapper>

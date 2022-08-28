@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoArticleMapper">
+    <!-- 此处与接口方法名对应 指定参数类型与返回结果类型-->
+    <select id="updateArticle" parameterType="com.so.studyonline.entity.SoArticle"
+            resultType="com.so.studyonline.entity.SoArticle">
+        update so_article
+        <set>
+            <if test="article!=null and !article.equals('')">article=#{article},</if>
+        </set>
+        where article_id = #{articleId}
+    </select>
+
+    <select id="getArticleContent" parameterType="com.so.studyonline.entity.SoArticle"
+            resultType="com.so.studyonline.entity.SoArticle">
+        select *
+        from so_article
+        <where>
+            <if test="id!=null and !id==0">
+                id = #{id}
+            </if>
+            <if test="articleId!=null and !articleId==0">
+                and article_id = #{articleId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="creationItem" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.so.studyonline.entity.SoArticle">
+        insert into so_article(article_id, article)
+        values (#{articleId}, #{article})
+    </insert>
+</mapper>

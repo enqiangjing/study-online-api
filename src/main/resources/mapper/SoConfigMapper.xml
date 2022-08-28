@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoConfigMapper">
+    <!--where标签：内部if都不满足则不处理，若满足，则将第一个语句的头部的and换成where关键字-->
+    <select id="findConfig" parameterType="com.so.studyonline.entity.SoConfig"
+            resultType="com.so.studyonline.entity.SoConfig">
+        select * from so_config
+        <where>
+            <if test="key!=null and !''.equals(key)">
+                and `key` = #{key}
+            </if>
+            <if test="value!=null and !''.equals(value)">
+                and `value` = #{value}
+            </if>
+            <if test="name!=null and !''.equals(name)">
+                and name = #{name}
+            </if>
+            <if test="group!=null and !''.equals(group)">
+                and `group` = #{group}
+            </if>
+            <if test="isMust!=null and !isMust==0">
+                and is_must = #{isMust}
+            </if>
+            <if test="status!=null and !''.equals(status)">
+                and `status` = #{status}
+            </if>
+            <if test="about!=null and !''.equals(about)">
+                and about like concat('%',#{about},'%')
+            </if>
+        </where>
+    </select>
+    <select id="findConfigByKeyAndGroup" parameterType="com.so.studyonline.entity.SoConfig"
+            resultType="com.so.studyonline.entity.SoConfig">
+        select *
+        from so_config
+        where `key` = #{key}
+          and `group` = #{group}
+          and `status` = '1'
+    </select>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoUserMapper">
+    <!-- 此处与接口方法名对应 指定参数类型与返回结果类型-->
+    <select id="userVerify" parameterType="String" resultType="com.so.studyonline.entity.SoUser">
+        select *
+        from so_user
+        where user_no = #{userNo}
+          and password = #{password}
+    </select>
+
+    <!-- 可变条件，单条结果查询 -->
+    <select id="findByUserInfo" parameterType="com.so.studyonline.entity.SoUser"
+            resultType="com.so.studyonline.entity.SoUser">
+        select * from so_user
+        <where>
+            <if test="id!=null and id!=0">
+                and id=#{id}
+            </if>
+            <if test="userNo!=null and !''.equals(userNo)">
+                and user_no=#{userNo}
+            </if>
+            <if test="password!=null and !''.equals(password)">
+                and password=#{password}
+            </if>
+            <if test="email!=null and !''.equals(email)">
+                and email=#{email}
+            </if>
+            <if test="phone!=null and !''.equals(phone)">
+                and phone=#{phone}
+            </if>
+        </where>
+        limit 1
+    </select>
+
+    <!--  修改用户信息  -->
+    <update id="updateOneUser" parameterType="com.so.studyonline.entity.SoUser">
+        UPDATE so_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="password!=null and !''.equals(password)">password=#{password},</if>
+            <if test="userName!=null and !''.equals(userName)">user_name=#{userName},</if>
+            <if test="userType!=null and userType!=0">user_type=#{userType},</if>
+            <if test="userRole!=null and !''.equals(userRole)">userRole=#{userRole},</if>
+            <if test="gander!=null and gander!=0">gander=#{gander},</if>
+            <if test="email!=null and !''.equals(email)">email=#{email},</if>
+            <if test="phone!=null and !''.equals(phone)">phone=#{phone},</if>
+            <if test="tel!=null and !''.equals(tel)">tel=#{tel},</if>
+            <if test="desc!=null and !''.equals(desc)">`desc`=#{desc},</if>
+            <if test="theme!=null and theme!=0">theme=#{theme},</if>
+            <if test="userImg!=null and !''.equals(userImg)">user_img=#{userImg},</if>
+            <if test="creationTime!=null and !''.equals(creationTime)">creation_time=#{creationTime},</if>
+            <if test="coverImg!=null and !''.equals(coverImg)">cover_img=#{coverImg},</if>
+            <if test="tags!=null and !''.equals(tags)">tags=#{tags},</if>
+            <if test="token!=null and !''.equals(token)">token=#{token},</if>
+        </trim>
+        <where>
+            <if test="id!=null and id!=0">
+                and id=#{id}
+            </if>
+            <if test="userNo!=null and !''.equals(userNo)">
+                or user_no=#{userNo}
+            </if>
+        </where>
+    </update>
+
+    <!--  插入用户表  -->
+    <insert id="addUser" parameterType="com.so.studyonline.entity.SoUser" useGeneratedKeys="true" keyProperty="id">
+        insert into so_user (user_no, password, user_name, user_type, user_role, gander, email, phone, tel, `desc`,
+                             theme, user_img, cover_img, tags, creation_time, creating_by)
+        VALUES (#{userNo}, #{password}, #{userName}, #{userType}, #{userRole}, #{userSex}, #{email}, #{phone}, #{tel},
+                #{desc}, #{theme}, #{userImg}, #{coverImg}, #{tags}, #{creationTime}, #{creationBy})
+    </insert>
+</mapper>

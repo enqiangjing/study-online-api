@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.studyonline.mapper.SoCurriculumInfoMapper">
+    <!--where标签：内部if都不满足则不处理，若满足，则将第一个语句的头部的and换成where关键字-->
+    <select id="findCurriculum" parameterType="com.so.studyonline.entity.SoCurriculumInfo"
+            resultType="com.so.studyonline.entity.SoCurriculumInfo">
+        SELECT * from so_curriculum_info
+        <where>
+            <if test="id!=null and id!=0">
+                and id=#{id}
+            </if>
+            <if test="title!=null and !''.equals(title)">
+                and title like concat('%',#{title},'%')
+            </if>
+            <if test="type!=null and !''.equals(type)">
+                and `type` = #{type}
+            </if>
+            <if test="subject!=null and !''.equals(subject)">
+                and `subject` = #{subject}
+            </if>
+            <if test="desc!=null and !''.equals(desc)">
+                and `desc` like concat('%',#{desc},'%')
+            </if>
+            <if test="isPublic!=null and !''.equals(isPublic)">
+                and is_public = #{isPublic}
+            </if>
+            <if test="personInCharge!=null and !''.equals(personInCharge)">
+                and person_in_charge = #{personInCharge}
+            </if>
+            <if test="headmaster!=null and !''.equals(headmaster)">
+                and headmaster = #{headmaster}
+            </if>
+            <if test="lecturer!=null and !''.equals(lecturer)">
+                and headmaster = #{lecturer}
+            </if>
+            <if test="status!=null and !''.equals(status)">
+                and `status` = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="findCurriculumPubLimit4" parameterType="com.so.studyonline.entity.SoCurriculumInfo"
+            resultType="com.so.studyonline.entity.SoCurriculumInfo">
+        SELECT * from (SELECT * from so_curriculum_info
+        <where>
+            <if test="id!=null and id!=0">
+                and id=#{id}
+            </if>
+            <if test="title!=null and !''.equals(title)">
+                and title like concat('%',#{title},'%')
+            </if>
+            <if test="type!=null and !''.equals(type)">
+                and `type` = #{type}
+            </if>
+            <if test="subject!=null and !''.equals(subject)">
+                and `subject` = #{subject}
+            </if>
+            <if test="desc!=null and !''.equals(desc)">
+                and `desc` like concat('%',#{desc},'%')
+            </if>
+            <if test="isPublic!=null and !''.equals(isPublic)">
+                and is_public = #{isPublic}
+            </if>
+            <if test="personInCharge!=null and !''.equals(personInCharge)">
+                and person_in_charge = #{personInCharge}
+            </if>
+            <if test="headmaster!=null and !''.equals(headmaster)">
+                and headmaster = #{headmaster}
+            </if>
+            <if test="lecturer!=null and !''.equals(lecturer)">
+                and headmaster = #{lecturer}
+            </if>
+            <if test="status!=null and !''.equals(status)">
+                and `status` = #{status}
+            </if>
+        </where>
+        order by heat desc) t1 limit 4
+    </select>
+
+    <select id="findCurriculumById" parameterType="com.so.studyonline.entity.SoCurriculumInfo"
+            resultType="com.so.studyonline.entity.SoCurriculumInfo">
+        select *
+        from so_curriculum_info
+        where id = #{id}
+    </select>
+</mapper>

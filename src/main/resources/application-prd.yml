@@ -1,0 +1,47 @@
+# 数据库
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: please input your mysql address
+    username: please input your mysql username
+    password: please input your mysql password
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+      max-lifetime: 30000
+      connection-test-query: SELECT 1
+  redis:
+    host: redis ip
+    port: 9966
+    password: redis password
+    timeout: 3s
+  # 邮箱
+  mail:
+    host: please input your mail host
+    username: please input your mail username
+    password: please input your mail password
+    default-encoding: UTF-8
+    properties:
+      from: please input your mail address
+      mail:
+        smtp:
+          port: 465
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+
+# 日志
+logging:
+  config: classpath:profile/log/log4j2-spring-test.xml
+
+# 自定义配置
+user:
+  up_file_path: please input your file path
+
+# QiNiuYun
+qnu:
+  config:
+    qnu_access_key: please input your qiniuyun access key
+    qnu_secret_key: please input your qiniuyun secret key
+    qnu_name: please input your qiniuyun filename # 文件夹名称
+    qnu_value: please input your qnu domain name
