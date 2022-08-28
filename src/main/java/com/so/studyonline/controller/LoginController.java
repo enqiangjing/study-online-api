@@ -9,7 +9,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.so.studyonline.annotation.PassToken;
 import com.so.studyonline.annotation.UserLoginToken;
 import com.so.studyonline.config.ErrorCode;
-import com.so.studyonline.enhance.RedisTemplate;
+import com.so.studyonline.enhance.RedisService;
 import com.so.studyonline.entity.SoConfig;
 import com.so.studyonline.exception.ExSysException;
 import com.so.studyonline.exception.ExUserException;
@@ -61,11 +61,11 @@ public class LoginController {
         this.verifyCodeService = verifyCodeService;
     }
 
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
 
     @Autowired
-    public void setRedisTemplate(RedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    public void setRedisTemplate(RedisService redisService) {
+        this.redisService = redisService;
     }
 
     /**
@@ -97,14 +97,14 @@ public class LoginController {
             throw new ExUserException(ErrorCode.USER_INFO_NULL); // 用户名和密码不能为空
         }
         SoConfig soConfig = new SoConfig();
-        String appConfigVerifyCode = redisTemplate.get("app_config_verify_code");
+        String appConfigVerifyCode = redisService.get("app_config_verify_code");
         if (StringUtil.isNullOrEmpty(appConfigVerifyCode)) { // 获取验证码校验是否开启的标识
             log.info("未读取到 redis app_config_verify_code 配置，从数据库读取！");
             soConfig.setKey("verify_code");
             soConfig.setGroup("app_config");
             soConfig.setStatus("1");
             soConfig = soConfigService.getConfigItem(soConfig);
-            redisTemplate.set5ks("app_config_verify_code", soConfig.getValue());
+            redisService.set5ks("app_config_verify_code", soConfig.getValue());
         } else {
             log.info("读取到 redis app_config_verify_code 配置 --- {}", appConfigVerifyCode);
             soConfig.setValue(appConfigVerifyCode);
@@ -149,25 +149,25 @@ public class LoginController {
      * @param userFind 用户信息
      */
     public void getSystemConfig(SoUser userFind) {
-        String remoteImgDomainType = redisTemplate.get("app_config_img_save_type");
+        String remoteImgDomainType = redisService.get("app_config_img_save_type");
         if (StringUtil.isNullOrEmpty(remoteImgDomainType)) { // redis读取配置信息失败
             SoConfig soConfig = new SoConfig();
             soConfig.setGroup("app_config");
             soConfig.setKey("img_save_type");
             remoteImgDomainType = soConfigService.getConfigValue(soConfig); // 远程图片访问地址
-            redisTemplate.set5ks("app_config_img_save_type", remoteImgDomainType);
+            redisService.set5ks("app_config_img_save_type", remoteImgDomainType);
         }
 
         // TODO 根据不同的remoteImgDomainType，确定图片服务器的地址。qnu_img_save（七牛云）
 
         if (remoteImgDomainType.equals("qnu_img_save")) { // redis读取配置信息失败
-            String remoteImgDomain = redisTemplate.get("qnu_img_save_base_url");
+            String remoteImgDomain = redisService.get("qnu_img_save_base_url");
             if (StringUtil.isNullOrEmpty(remoteImgDomain)) {
                 SoConfig soConfig = new SoConfig();
                 soConfig.setGroup("qnu_img_save");
                 soConfig.setKey("base_url");
                 remoteImgDomain = soConfigService.getConfigValue(soConfig);
-                redisTemplate.set5ks("qnu_img_save_base_url", remoteImgDomain);
+                redisService.set5ks("qnu_img_save_base_url", remoteImgDomain);
             }
             userFind.setRemoteImgDomain(remoteImgDomain);
         }

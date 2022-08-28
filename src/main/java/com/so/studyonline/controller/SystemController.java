@@ -16,7 +16,7 @@ import com.so.studyonline.enhance.ResMessage;
 import com.so.studyonline.entity.SoConfig;
 import com.so.studyonline.entity.SoUser;
 import com.so.studyonline.exception.ExUserException;
-import com.so.studyonline.enhance.RedisTemplate;
+import com.so.studyonline.enhance.RedisService;
 import com.so.studyonline.service.SoConfigService;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -60,11 +60,11 @@ public class SystemController {
         this.userConfig = userConfig;
     }
 
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
 
     @Autowired
-    public void setRedisTemplate(RedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    public void setRedisTemplate(RedisService redisService) {
+        this.redisService = redisService;
     }
 
 
@@ -78,7 +78,7 @@ public class SystemController {
     @ResponseBody
     public String getHomeCarouselImg() {
         JSONArray jsonArray;
-        String homeCarouselImg = redisTemplate.get("home_carousel_img");
+        String homeCarouselImg = redisService.get("home_carousel_img");
         if (StringUtil.isNullOrEmpty(homeCarouselImg)) {
             log.info("redis 不存在 home_carousel_img，连接数据库读取！");
             SoConfig soConfig = new SoConfig();
@@ -86,7 +86,7 @@ public class SystemController {
             soConfig.setStatus("1");
             List<SoConfig> soConfigList = soConfigService.getConfigList(soConfig);
             jsonArray = (JSONArray) JSONObject.toJSON(soConfigList);
-            redisTemplate.set5ks("home_carousel_img", jsonArray.toJSONString());
+            redisService.set5ks("home_carousel_img", jsonArray.toJSONString());
         } else {
             log.info("redis 存在 home_carousel_img，直接返回！");
             jsonArray = JSON.parseArray(homeCarouselImg);
@@ -105,7 +105,7 @@ public class SystemController {
     @ResponseBody
     public String getSelectClassCarouselImg() {
         JSONArray jsonArray;
-        String selectClassCarouseImg = redisTemplate.get("select_class_carouse_img");
+        String selectClassCarouseImg = redisService.get("select_class_carouse_img");
         if (StringUtil.isNullOrEmpty(selectClassCarouseImg)) {
             log.info("redis 不存在 select_class_carouse_img，连接数据库读取！");
             SoConfig soConfig = new SoConfig();
@@ -113,7 +113,7 @@ public class SystemController {
             soConfig.setStatus("1");
             List<SoConfig> soConfigList = soConfigService.getConfigList(soConfig);
             jsonArray = (JSONArray) JSONObject.toJSON(soConfigList);
-            redisTemplate.set5ks("select_class_carouse_img", jsonArray.toJSONString());
+            redisService.set5ks("select_class_carouse_img", jsonArray.toJSONString());
         } else {
             log.info("redis 存在 select_class_carouse_img，直接返回！");
             jsonArray = JSON.parseArray(selectClassCarouseImg);
@@ -132,7 +132,7 @@ public class SystemController {
     @ResponseBody
     public String configInfoNeedVerifyCode() {
         JSONObject jsonObject;
-        String appConfigVerifyCode = redisTemplate.get("app_config_verify_code");
+        String appConfigVerifyCode = redisService.get("app_config_verify_code");
         if (StringUtil.isNullOrEmpty(appConfigVerifyCode)) {
             log.info("redis 不存在 app_config_verify_code，连接数据库读取！");
             SoConfig soConfig = new SoConfig();
@@ -141,7 +141,7 @@ public class SystemController {
             soConfig.setStatus("1");
             soConfig = soConfigService.getConfigItem(soConfig);
             jsonObject = (JSONObject) JSONObject.toJSON(soConfig);
-            redisTemplate.set5ks("app_config_verify_code", jsonObject.toJSONString());
+            redisService.set5ks("app_config_verify_code", jsonObject.toJSONString());
         } else {
             log.info("redis 存在 app_config_verify_code，直接返回！");
             jsonObject = JSON.parseObject(appConfigVerifyCode);
@@ -161,27 +161,27 @@ public class SystemController {
     public String getRemoteImgDomain() {
         SoUser soUser = new SoUser();
         SoConfig soConfig = new SoConfig();
-        String remoteImgDomainType = redisTemplate.get("app_config_img_save_type");
+        String remoteImgDomainType = redisService.get("app_config_img_save_type");
         if (StringUtil.isNullOrEmpty(remoteImgDomainType)) {
             log.info("redis 不存在 app_config_img_save_type，连接数据库读取！");
             soConfig.setGroup("app_config");
             soConfig.setKey("img_save_type");
             remoteImgDomainType = soConfigService.getConfigValue(soConfig); // 远程图片访问地址
-            redisTemplate.set5ks("app_config_img_save_type", remoteImgDomainType);
+            redisService.set5ks("app_config_img_save_type", remoteImgDomainType);
         }
 
         // TODO 根据 remoteImgDomainType 获取图片服务器地址
 
         String remoteImgDomain = null;
         if (remoteImgDomainType.equals("qnu_img_save")) { // 七牛云配置
-            remoteImgDomain = redisTemplate.get("qnu_img_save_base_url");
+            remoteImgDomain = redisService.get("qnu_img_save_base_url");
             log.info("redis 读取 qnu_img_save_base_url --- {}", remoteImgDomain);
             if (StringUtil.isNullOrEmpty(remoteImgDomain)) {
                 log.info("redis 不存在 qnu_img_save_base_url，连接数据库读取！");
                 soConfig.setGroup("qnu_img_save");
                 soConfig.setKey("base_url");
                 remoteImgDomain = soConfigService.getConfigValue(soConfig);
-                redisTemplate.set5ks("qnu_img_save_base_url", remoteImgDomain);
+                redisService.set5ks("qnu_img_save_base_url", remoteImgDomain);
             }
         }
         soUser.setRemoteImgDomain(remoteImgDomain);
@@ -198,7 +198,7 @@ public class SystemController {
     @ResponseBody
     public String getArticleType() {
         JSONArray jsonArray;
-        String article_type = redisTemplate.get("article_type");
+        String article_type = redisService.get("article_type");
         if (StringUtil.isNullOrEmpty(article_type)) {
             log.info("redis 不存在 article_type，连接数据库读取！");
             SoConfig soConfig = new SoConfig();
@@ -206,7 +206,7 @@ public class SystemController {
             soConfig.setStatus("1");
             List<SoConfig> soConfigList = soConfigService.getConfigList(soConfig);
             jsonArray = (JSONArray) JSON.toJSON(soConfigList);
-            redisTemplate.set5ks("article_type", jsonArray.toJSONString());
+            redisService.set5ks("article_type", jsonArray.toJSONString());
         } else {
             log.info("redis 存在 article_type，直接返回！");
             jsonArray = JSON.parseArray(article_type);
@@ -226,33 +226,33 @@ public class SystemController {
         String fileUrl = "";
         SoConfig soConfig = new SoConfig();
         soConfig.setStatus("1");
-        String videSaveConfig = redisTemplate.get("app_config_video_save_type");
+        String videSaveConfig = redisService.get("app_config_video_save_type");
         if (StringUtil.isNullOrEmpty(videSaveConfig)) {
             soConfig.setGroup("app_config");
             soConfig.setKey("video_save_type");
             videSaveConfig = soConfigService.getConfigValue(soConfig);
-            redisTemplate.set5ks("app_config_video_save_type", videSaveConfig);
+            redisService.set5ks("app_config_video_save_type", videSaveConfig);
         }
 
         if (videSaveConfig.equals("qnu_video_save")) { // 七牛云文件存储
             soConfig.setGroup(videSaveConfig);
-            String baseUrl = redisTemplate.get("qnu_video_save_base_url");
+            String baseUrl = redisService.get("qnu_video_save_base_url");
             if (StringUtil.isNullOrEmpty(baseUrl)) {
                 soConfig.setKey("base_url"); // 域名
                 baseUrl = soConfigService.getConfigValue(soConfig);
-                redisTemplate.set5ks("qnu_video_save_base_url", baseUrl);
+                redisService.set5ks("qnu_video_save_base_url", baseUrl);
             }
-            String dirName = redisTemplate.get("qnu_video_save_dir_name");
+            String dirName = redisService.get("qnu_video_save_dir_name");
             if (StringUtil.isNullOrEmpty(dirName)) {
                 soConfig.setKey("dir_name"); // 文件路径
                 dirName = soConfigService.getConfigValue(soConfig);
-                redisTemplate.set5ks("qnu_video_save_dir_name", dirName);
+                redisService.set5ks("qnu_video_save_dir_name", dirName);
             }
-            String validity = redisTemplate.get("qnu_video_save_term_of_validity");
+            String validity = redisService.get("qnu_video_save_term_of_validity");
             if (StringUtil.isNullOrEmpty(validity)) {
                 soConfig.setKey("term_of_validity"); // 播放链接有效期
                 validity = soConfigService.getConfigValue(soConfig);
-                redisTemplate.set5ks("qnu_video_save_term_of_validity", validity);
+                redisService.set5ks("qnu_video_save_term_of_validity", validity);
             }
             fileName = dirName + "/" + fileName;
             try {
@@ -297,21 +297,21 @@ public class SystemController {
             // 文件接收成功后，上传远程服务器
             SoConfig soConfig = new SoConfig();
             soConfig.setStatus("1");
-            String imgSaveConfig = redisTemplate.get("app_config_img_save_type");
+            String imgSaveConfig = redisService.get("app_config_img_save_type");
             if (StringUtil.isNullOrEmpty(imgSaveConfig)) {
                 soConfig.setGroup("app_config");
                 soConfig.setKey("img_save_type");
                 imgSaveConfig = soConfigService.getConfigValue(soConfig);
-                redisTemplate.set5ks("app_config_img_save_type", imgSaveConfig);
+                redisService.set5ks("app_config_img_save_type", imgSaveConfig);
             }
 
             if (imgSaveConfig.equals("qnu_img_save")) { // 远程文件存储服务器为七牛云
-                String spaceName = redisTemplate.get("qnu_img_save_space_name");
+                String spaceName = redisService.get("qnu_img_save_space_name");
                 if (StringUtil.isNullOrEmpty(spaceName)) {
                     soConfig.setGroup("qnu_img_save");
                     soConfig.setKey("space_name");
                     spaceName = soConfigService.getConfigValue(soConfig);
-                    redisTemplate.set5ks("qnu_img_save_space_name", spaceName);
+                    redisService.set5ks("qnu_img_save_space_name", spaceName);
                 }
                 Auth auth = Auth.create(qiniuyun.getQnu_access_key(), qiniuyun.getQnu_secret_key());
                 String token = auth.uploadToken(spaceName);

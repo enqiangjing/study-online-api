@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * redis工具类
  */
 @Component
-public class RedisTemplate {
+public class RedisService {
 
     private StringRedisTemplate redisTemplate;
 
